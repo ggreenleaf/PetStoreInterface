@@ -1,23 +1,26 @@
 # python interface to petstore mysql database
 import mysql.connector
 
-tables = [("PET_STORE",("sid","StreetNo","StreetName","City","State","PhoneNumber")),
+tables = (("PET_STORE",("sid","StreetNo","StreetName","City","State","phone_number")),
 				("JOB", ("JobDesc","PayRate")),
-				("WORKS",("Eid","JobDesc","Hours")),
-				("P_TRANSACTION",("Tid","Date")),
-				("EXECUTES",("Eid","Tid","TerminalNo")),
-				("Employee",("Eid","FirstName","LastName")),
-				("Employs",("Eid","Sid","StartDate")),
-				("PRODUCT",("Pid","Name","Description","Price")),
-				("STOCKS",("Sid","Pid","Quantity")),
-				("SELLS",("Tid","Pid","Quantity"))]
+				("WORKS",("eid","JobDesc","Hours")),
+				("P_TRANSACTION",("tid","tDate")),
+				("EXECUTES",("eid","tid","terminalNo")),
+				("Employee",("eid","fName","lname")),
+				("Employs",("eid","sid","startDate")),
+				("PRODUCT",("pid","pname","pdesc","price")),
+				("STOCKS",("sid","pid","quantity")),
+				("SELLS",("tid","pid","t_quantity")))
 
+def display_tables():
+	for i, table in enumerate(tables):
+		print i,table[0]
 
 def update(cursor):
 	pass
 
 def delete(cursor):
-	pass
+	
 
 def insert(cursor):
 	#Example of a insert command
@@ -31,16 +34,39 @@ def insert(cursor):
 	#cnx.commit() will save the changes
 	#
 	#
-	pass
+	display_tables()
+	choice = raw_input("Please enter the number for the table you would like to insert into: ")
+	while True:
+		try:
+			if int(choice) < 0 or int(choice) > len(tables) - 1:
+				print "please select a valid table number. You entered %d",int(choice)
+				choice = raw_input("Please enter a valid number: ")
+		except ValueError:
+			print "please enter a number.You entered %s."%choice
+			choice = raw_input("Please enter a number: ")
+
+
+		else:
+			break
+
+	#gathering values for attributes.
+	print "Inserting into table %s" %tables[int(choice)][0]
+	print "please enter the data for the attribute listed"
+	data_tuple = tuple([raw_input("%s: "%attribute) for attribute in tables[int(choice)][1]])
+	att_length = len(tables[int(choice)][1])
+	insert_sql = (
+			"INSERT INTO %s (%s) "
+			"Values (%s)" )%(tables[int(choice)][0] , 
+							",".join(i for i in tables[int(choice)][1]),
+							",".join(["%s" for i in xrange(att_length)]))
+	
+	cursor.execute(insert_sql,data_tuple)
+
+
 
 def select(cursor):
-
-	
 	print "Please select a valid table to display information from"
-	
-	for i, table in enumerate(tables):
-		print i,table[0]
-
+	display_tables()
 	while True:
 		choice = int(raw_input("Enter number next to table: "))
 		if choice < 0 or choice > len(tables) - 1:
@@ -53,7 +79,7 @@ def select(cursor):
 	cursor.execute(query)
 	print "\t".join(i for i in tables[choice][1])
 	for t in cursor:
-			print "\t".join(str(att) for att in t)git 
+			print "\t".join(str(att) for att in t)
 
 
 def display_prompt():
@@ -77,6 +103,7 @@ while True:
 		continue 
 
 	if choice == 1:
+		insert(cur)
 		pass
 
 	elif choice == 2:
@@ -91,8 +118,9 @@ while True:
 	elif choice == 5:
 		break
 
+	cnx.commit() #commit changes after all operations incase view is selected after modifying DB
 
-
+cnx.close()
 
 
 
