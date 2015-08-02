@@ -11,33 +11,35 @@ def insert(cursor):
 	pass
 
 def select(cursor):
-	tables = ["Pet_Store","Employs","Employee","Sells","Product","Stocks"]
+	tables = [("PET_STORE",("sid","StreetNo","StreetName","City","State","PhoneNumber")),
+				("JOB", ("JobDesc","PayRate")),
+				("WORKS",("Eid","JobDesc","Hours")),
+				("P_TRANSACTION",("Tid","Date")),
+				("EXECUTES",("Eid","Tid","TerminalNo")),
+				("Employee",("Eid","FirstName","LastName")),
+				("Employs",("Eid","Sid","StartDate")),
+				("PRODUCT",("Pid","Name","Description","Price")),
+				("STOCKS",("Sid","Pid","Quantity")),
+				("SELLS",("Tid","Pid","Quantity"))]
 	
 	print "Please select a valid table to display information from"
 	
 	for i, table in enumerate(tables):
-		print i,table
+		print i,table[0]
 
 	while True:
-		choice = int(raw_input("Enter number next to table: >>"))
+		choice = int(raw_input("Enter number next to table: "))
 		if choice < 0 or choice > len(tables) - 1:
 			print "invalid entry"
 			continue
 		else:
 			break
 
-	query = "Select * from %s" % tables[choice]
+	query = "Select * from %s" % tables[choice][0]
 	cursor.execute(query)
-
-	for item in cursor:
-		print item
-
-
-
-
-
-	
-
+	print "\t".join(i for i in tables[choice][1])
+	for t in cursor:
+			print "\t".join(str(att) for att in t)
 
 
 def display_prompt():
@@ -50,12 +52,12 @@ def display_prompt():
 		5)	disconnect"""
 
 
-cnx = mysql.connector.connect(user='root', database='PET_STORE_INVENTORY')
-cur = cnx.cursor(buffer)
+cnx = mysql.connector.connect(user='root', database='PET_STORE_2')
+cur = cnx.cursor(buffered=True)
 
 while True:
 	display_prompt()
-	choice = int(raw_input("Select your operation >> "))
+	choice = int(raw_input("Select your operation: "))
 	if choice < 1 or choice > 5:
 		print "You have selected an invalid operation please choose a valid operation."
 		continue 
