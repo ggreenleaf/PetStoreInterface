@@ -16,11 +16,45 @@ def display_tables():
 	for i, table in enumerate(tables):
 		print i,table[0]
 
+def get_table_choice():
+	display_tables()
+	choice = raw_input("Please select valid table number: ")
+	while True:
+		try:
+			if int(choice) < 0 or int(choice) > len(tables) - 1:
+				print "please select a valid table number. You entered ",int(choice)
+				choice = raw_input("Please enter a valid number: ")
+			else:
+				break
+		except ValueError:
+			print "please enter a number.You entered %s."%choice
+			choice = raw_input("Please enter a number: ")
+
+		
+	return int(choice)
+
 def update(cursor):
 	pass
 
+
+
 def delete(cursor):
-	
+	choice = get_table_choice()
+	query = "Select * from %s" % tables[choice][0]
+	cursor.execute(query)
+	print "  ","\t".join(i for i in tables[choice][1])
+	saved_data = []
+	for i,t in enumerate(cursor):
+			print "%d)"%i, "\t".join(str(att) for att in t)
+			saved_data.append(t)
+
+	delete_cond = tuple("%s='%s'"%(col,val) for col,val in zip(tables[choice][1],saved_data[6]))
+	delete_sql = (
+		"DELETE FROM %s "
+		"WHERE (%s)")%(tables[choice][0],"AND ".join(i for i in delete_cond))
+	print delete_sql
+	cursor.execute(delete_sql)
+
 
 def insert(cursor):
 	#Example of a insert command
@@ -34,20 +68,7 @@ def insert(cursor):
 	#cnx.commit() will save the changes
 	#
 	#
-	display_tables()
-	choice = raw_input("Please enter the number for the table you would like to insert into: ")
-	while True:
-		try:
-			if int(choice) < 0 or int(choice) > len(tables) - 1:
-				print "please select a valid table number. You entered %d",int(choice)
-				choice = raw_input("Please enter a valid number: ")
-		except ValueError:
-			print "please enter a number.You entered %s."%choice
-			choice = raw_input("Please enter a number: ")
-
-
-		else:
-			break
+	choice = get_table_choice()
 
 	#gathering values for attributes.
 	print "Inserting into table %s" %tables[int(choice)][0]
@@ -66,20 +87,23 @@ def insert(cursor):
 
 def select(cursor):
 	print "Please select a valid table to display information from"
-	display_tables()
-	while True:
-		choice = int(raw_input("Enter number next to table: "))
-		if choice < 0 or choice > len(tables) - 1:
-			print "invalid entry"
-			continue
-		else:
-			break
-
+	# display_tables()
+	# while True:
+	# 	choice = int(raw_input("Enter number next to table: "))
+	# 	if choice < 0 or choice > len(tables) - 1:
+	# 		print "invalid entry"
+	# 		continue
+	# 	else:
+	# 		break
+	choice = get_table_choice()
 	query = "Select * from %s" % tables[choice][0]
 	cursor.execute(query)
-	print "\t".join(i for i in tables[choice][1])
-	for t in cursor:
-			print "\t".join(str(att) for att in t)
+	print "  ","\t".join(i for i in tables[choice][1])
+	for i,t in enumerate(cursor):
+			print "%d)"%i, "\t".join(str(att) for att in t)
+	
+
+
 
 
 def display_prompt():
@@ -107,7 +131,7 @@ while True:
 		pass
 
 	elif choice == 2:
-		pass
+		delete(cur)
 
 	elif choice == 3:
 		pass
