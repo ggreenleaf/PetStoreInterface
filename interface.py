@@ -154,7 +154,6 @@ while True:
 
 	if choice == 1:
 		insert(cur)
-		pass
 
 	elif choice == 2:
 		delete(cur)
