@@ -1,17 +1,7 @@
 # python interface to petstore mysql database
 import mysql.connector
 
-def update(cursor):
-	pass
-
-def delete(cursor):
-	pass
-
-def insert(cursor):
-	pass
-
-def select(cursor):
-	tables = [("PET_STORE",("sid","StreetNo","StreetName","City","State","PhoneNumber")),
+tables = [("PET_STORE",("sid","StreetNo","StreetName","City","State","PhoneNumber")),
 				("JOB", ("JobDesc","PayRate")),
 				("WORKS",("Eid","JobDesc","Hours")),
 				("P_TRANSACTION",("Tid","Date")),
@@ -21,6 +11,30 @@ def select(cursor):
 				("PRODUCT",("Pid","Name","Description","Price")),
 				("STOCKS",("Sid","Pid","Quantity")),
 				("SELLS",("Tid","Pid","Quantity"))]
+
+
+def update(cursor):
+	pass
+
+def delete(cursor):
+	pass
+
+def insert(cursor):
+	#Example of a insert command
+	##testing insert
+	#
+	#insert = (
+	#	"INSERT INTO PET_STORE (sid,StreeNo,StreetName,City,State,Phone_number) "
+	#	"VALUES (%s, %s, %s, %s, %s, %s, %s)" )
+	# cursor.execute(insert,(tuple of values for insert))
+	# 
+	#cnx.commit() will save the changes
+	#
+	#
+	pass
+
+def select(cursor):
+
 	
 	print "Please select a valid table to display information from"
 	
@@ -39,7 +53,7 @@ def select(cursor):
 	cursor.execute(query)
 	print "\t".join(i for i in tables[choice][1])
 	for t in cursor:
-			print "\t".join(str(att) for att in t)
+			print "\t".join(str(att) for att in t)git 
 
 
 def display_prompt():
