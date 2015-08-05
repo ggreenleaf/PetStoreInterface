@@ -77,7 +77,7 @@ def delete(cursor):
 	for i,t in enumerate(cursor):
 			print "%d)"%i, "\t".join(str(att) for att in t)
 			saved_data.append(t)
-	print i
+
 	tuple_choice = get_choice(i) 
 	delete_cond = tuple("%s='%s'"%(col,val) for col,val in zip(tables[choice][1],saved_data[tuple_choice]))
 	delete_sql = (
